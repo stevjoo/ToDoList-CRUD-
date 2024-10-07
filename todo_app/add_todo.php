@@ -8,16 +8,16 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $task = $_POST['task'];
-    $todoId = $_POST['todo_id'];
+    $title = $_POST['title'];
+    $userId = $_SESSION['user_id'];
 
-    $stmt = $conn->prepare("INSERT INTO tasks (todo_id, task) VALUES (?, ?)");
-    $stmt->bind_param("is", $todoId, $task);
+    $stmt = $conn->prepare("INSERT INTO todos (user_id, title) VALUES (?, ?)");
+    $stmt->bind_param("is", $userId, $title);
 
     if ($stmt->execute()) {
         header("Location: dashboard.php");
     } else {
-        echo "Gagal menambahkan task.";
+        echo "Gagal menambahkan to-do list.";
     }
 }
 ?>
@@ -27,13 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Task</title>
+    <title>Tambah To-Do List</title>
 </head>
 <body>
-    <h2>Tambah Task</h2>
-    <form action="add_task.php" method="POST">
-        <input type="text" name="task" placeholder="Nama Task" required><br>
-        <input type="hidden" name="todo_id" value="<?php echo $_GET['todo_id']; ?>"><br>
+    <h2>Tambah To-Do List</h2>
+    <form action="add_todo.php" method="POST">
+        <input type="text" name="title" placeholder="Judul To-Do List" required><br>
         <button type="submit">Tambah</button>
     </form>
 </body>
