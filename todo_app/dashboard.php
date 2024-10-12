@@ -86,20 +86,21 @@ $result = $stmt->get_result();
                 echo "<h2 class='text-lg font-bold mb-4'>You Searched for: <span class='text-blue-600'>" . htmlspecialchars($searchQuery) . "</span></h2>";
 
                 while ($task = $tasks->fetch_assoc()) {
-                    echo '<div class="p-8 mb-4 bg-slate-50 rounded-lg shadow transition-all duration-200">';
-                    echo '<p class="text-lg font-medium">' . htmlspecialchars($task['task']) . '</p>';
+                    echo $task['completed'] 
+                        ? '<li class="flex items-center line-through text-slate-600 text-opacity-50 p-1 break-words w-full border-b">'
+                        : '<li class="flex items-center p-1 break-words w-full border-b">';
 
-                    echo '<div class="mt-2 border-t pt-2">';
+                    echo '<input class="checkbox checkbox-lg md:checkbox-md checkbox-primary" type="checkbox" ' 
+                        . ($task['completed'] ? 'checked' : '') 
+                        . ' onchange="location.href=\'complete_task.php?task_id=' . $task['id'] . '&status=' 
+                        . ($task['completed'] ? '0' : '1') . '\'"/>';
 
-                    if ($task['completed']) {
-                        echo '<span class="inline-block bg-green-100 text-green-800 text-sm px-2 py-1 rounded-full">Completed</span>';
-                    } else {
-                        echo '<span class="inline-block bg-red-100 text-red-800 text-sm px-2 py-1 rounded-full">Incomplete</span>';
-                    }
-                    echo ' <a class="btn btn-ghost"' . "href='complete_task.php?task_id=" . $task['id'] . "&status=" . ($task['completed'] ? "0" : "1") . "'>";
-                    echo $task['completed'] ? "Mark as Incomplete" : "Mark as Done";
-                    echo "</a></p>";
-                    echo '</div></div>';
+                    echo '<p class="ml-2 py-1">' . htmlspecialchars($task['task']) . '</p>';
+
+                    // Updated Delete Task Button with Confirmation
+                    echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . $task['id'] . ')" class="ml-auto text-red-500 hover:underline">Delete</a>';
+
+                    echo '</li>';
                 }
 
                 echo '</div>';
@@ -107,54 +108,54 @@ $result = $stmt->get_result();
                 echo '<div class="w-full h-full md:w-4/5
                 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-sky-100">';
                 while ($row = $result->fetch_assoc()) {
-                    $todoId = $row['id'];
-                    echo '<div class="my-4 m-auto w-4/5 max-w-96 max-h-80
-                        bg-slate-50 shadow-md shadow-slate-400 rounded-3xl overflow-hidden">
-                        <h4 class="font-bold bg-gradient-to-tr from-blue-200 to-sky-200 p-4 text-xl text-slate-600">' . htmlspecialchars($row['title']) . "</h4>";
+    $todoId = $row['id'];
+    echo '<div class="my-4 m-auto w-4/5 max-w-96 max-h-80
+            bg-slate-50 shadow-md shadow-slate-400 rounded-3xl overflow-hidden">
+            <h4 class="font-bold bg-gradient-to-tr from-blue-200 to-sky-200 p-4 text-xl text-slate-600">' . htmlspecialchars($row['title']) . "</h4>";
 
-                    $filterQuery = "SELECT * FROM tasks WHERE todo_id = ?";
-                    if ($statusFilter == 'completed') {
-                        $filterQuery .= " AND completed = 1";
-                    } elseif ($statusFilter == 'incomplete') {
-                        $filterQuery .= " AND completed = 0";
-                    }
+    $filterQuery = "SELECT * FROM tasks WHERE todo_id = ?";
+    if ($statusFilter == 'completed') {
+        $filterQuery .= " AND completed = 1";
+    } elseif ($statusFilter == 'incomplete') {
+        $filterQuery .= " AND completed = 0";
+    }
 
-                    $taskStmt = $conn->prepare($filterQuery);
-                    $taskStmt->bind_param("i", $todoId);
-                    $taskStmt->execute();
-                    $tasks = $taskStmt->get_result();
+    $taskStmt = $conn->prepare($filterQuery);
+    $taskStmt->bind_param("i", $todoId);
+    $taskStmt->execute();
+    $tasks = $taskStmt->get_result();
 
-                    echo '<div class="max-h-40 overflow-y-scroll">';
-                    echo '<ul class"max-h-64 overflow-x-scroll p-0 m-0">';
-                    while ($task = $tasks->fetch_assoc()) {
+    echo '<div class="max-h-40 overflow-y-scroll">';
+    echo '<ul class"max-h-64 overflow-x-scroll p-0 m-0">';
+    while ($task = $tasks->fetch_assoc()) {
+        echo $task['completed'] 
+            ? '<li class="flex items-center line-through text-slate-600 text-opacity-50 p-1 break-words w-full border-b">'
+            : '<li class="flex items-center p-1 break-words w-full border-b">';
 
-                        // cross out if complete
-                        echo $task['completed'] ? '<li class="flex items-center line-through text-slate-600 text-opacity-50 p-1 break-words w-full border-b"> ' : '<li class="flex items-center p-1 break-words w-full border-b"> ';
+        echo '<input class="checkbox checkbox-lg md:checkbox-md checkbox-primary" type="checkbox" ' 
+            . ($task['completed'] ? 'checked' : '') 
+            . ' onchange="location.href=\'complete_task.php?task_id=' . $task['id'] . '&status=' 
+            . ($task['completed'] ? '0' : '1') . '\'"/>';
 
-                        // Eli : checkboxnya kalo diclick reset/reload pagenya.
-                        // kalau udah scroll kebawah bakal back to top
-                        // idk how to fix this 
-                        echo '<input class="checkbox checkbox-lg md:checkbox-md checkbox-primary" type="checkbox" ' . ($task['completed'] ? 'checked' : '') .
-                            ' onchange="location.href=\'complete_task.php?task_id=' . $task['id'] . '&status=' . ($task['completed'] ? '0' : '1') . '\'"/>';
-                        echo '<p class="ml-2 py-1">' . htmlspecialchars($task['task']) . '</p>';
+        echo '<p class="ml-2 py-1">' . htmlspecialchars($task['task']) . '</p>';
 
-                        // echo " <a href='complete_task.php?task_id=" . $task['id'] . "&status=" . ($task['completed'] ? "0" : "1") . "'>";
-                        // echo $task['completed'] ? "Tandai Belum Selesai" : "Tandai Selesai";
-                        // echo "</a></p>";
-                        echo '</li>';
-                    }
-                    echo '</ul>';
-                    echo '</div>';
-                    echo '<div class="border-t-2">';
+        // Updated Delete Task Button with Confirmation
+        echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . $task['id'] . ')" class="ml-auto text-red-500 hover:underline">Delete</a>';
 
-                    echo "<a href='add_task.php?todo_id=" . $todoId . "' class='m-2 float-left rounded-full hover:bg-purple-300'>
-                            <img class='m-4 max-w-8 max-h-8 inline-block' src='img/add-circle-svgrepo-com.svg' alt='add task svg' />
-                        </a>".
-                        "<a href='delete_todo.php?id=" . $todoId . "' class='float-right m-2 rounded-full hover:bg-red-300'>" .
-                        "<img class='m-4 max-w-8 max-h-8 inline-block' src='img/delete-svgrepo-com.svg' alt='delete list svg' />" .
-                        "</a></div></div>";
-                    // echo "<a href='add_task.php?todo_id=" . $todoId . "'>Add Task</a> | <a href='delete_todo.php?id=" . $todoId . "'>Delete</a></div></div>";
-                }
+        echo '</li>';
+    }
+    echo '</ul>';
+    echo '</div>';
+    echo '<div class="border-t-2">';
+
+    // Updated Delete Todo Button with Confirmation
+    echo "<a href='add_task.php?todo_id=" . $todoId . "' class='m-2 float-left rounded-full hover:bg-purple-300'>
+            <img class='m-4 max-w-8 max-h-8 inline-block' src='img/add-circle-svgrepo-com.svg' alt='add task svg' />
+          </a>".
+         "<a href='javascript:void(0)' onclick='confirmDeleteTodo(" . $todoId . ")' class='float-right m-2 rounded-full hover:bg-red-300'>
+            <img class='m-4 max-w-8 max-h-8 inline-block' src='img/delete-svgrepo-com.svg' alt='delete list svg' />
+          </a></div></div>";
+}
             }
             echo '</div>';
             ?>
@@ -227,6 +228,19 @@ $result = $stmt->get_result();
                 console.error(`Modal with ID "${modalId}" not found.`);
             }
         }
+
+        function confirmDeleteTask(taskId) {
+            if (confirm("Are you sure you want to delete this task?")) {
+                location.href = 'delete_task.php?task_id=' + taskId;
+            }
+        }
+
+        function confirmDeleteTodo(todoId) {
+            if (confirm("Are you sure you want to delete this entire todo list?")) {
+                location.href = 'delete_todo.php?id=' + todoId;
+            }
+        }
+
 
         // for modal close window button to refresh page
         function refreshPage() {

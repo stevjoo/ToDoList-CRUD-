@@ -7,16 +7,22 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-if (isset($_GET['id'])) {
-    $taskId = $_GET['id'];
+if (isset($_GET['task_id'])) {
+    $taskId = $_GET['task_id'];
 
+    // Prepare the DELETE query
     $stmt = $conn->prepare("DELETE FROM tasks WHERE id = ?");
     $stmt->bind_param("i", $taskId);
 
     if ($stmt->execute()) {
         header("Location: dashboard.php");
     } else {
-        echo "Gagal menghapus task.";
+        echo "Error deleting task.";
     }
+    $stmt->close();
+} else {
+    echo "Invalid task ID.";
 }
+
+$conn->close();
 ?>
