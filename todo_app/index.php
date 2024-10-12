@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input class="input input-lg my-4 md:w-3/5" type="password" name="password" placeholder="Password" required>
             <button class="m4-2 block btn btn-primary text-xl" type="submit"> Login</button>
             <a class="my-4 block text-center text-blue-600 hover:underline" href="register.php">Don't have an account?</a>
+            <a class="my-4 block text-center text-blue-600 hover:underline" href="./forgot/forgot_password.php">Forgot Password</a>
         </form>
     </div>
 </body>
