@@ -112,6 +112,8 @@ $result = $stmt->get_result();
     echo '<div class="my-4 m-auto w-4/5 max-w-96 max-h-80
             bg-slate-50 shadow-md shadow-slate-400 rounded-3xl overflow-hidden">
             <h4 class="font-bold bg-gradient-to-tr from-blue-200 to-sky-200 p-4 text-xl text-slate-600">' . htmlspecialchars($row['title']) . "</h4>";
+            echo '<a href="edit_todo.php?todo_id=' . $row['id'] . '" class="ml-2 text-blue-500 hover:underline">Edit</a>';
+
 
     $filterQuery = "SELECT * FROM tasks WHERE todo_id = ?";
     if ($statusFilter == 'completed') {
@@ -138,8 +140,8 @@ $result = $stmt->get_result();
             . ($task['completed'] ? '0' : '1') . '\'"/>';
 
         echo '<p class="ml-2 py-1">' . htmlspecialchars($task['task']) . '</p>';
+        echo '<a href="edit_task.php?task_id=' . $task['id'] . '" class="ml-2 text-blue-500 hover:underline">Edit</a>';
 
-        // Updated Delete Task Button with Confirmation
         echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . $task['id'] . ')" class="ml-auto text-red-500 hover:underline">Delete</a>';
 
         echo '</li>';
@@ -240,7 +242,6 @@ $result = $stmt->get_result();
                 location.href = 'delete_todo.php?id=' + todoId;
             }
         }
-
 
         // for modal close window button to refresh page
         function refreshPage() {

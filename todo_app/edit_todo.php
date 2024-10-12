@@ -7,31 +7,27 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-if (!isset($_GET['id'])) {
-    echo "No todo ID provided.";
-    exit;
+if (isset($_GET['todo_id'])) {
+    $todoId = $_GET['todo_id'];
+    $query = "SELECT * FROM todos WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $todoId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $todo = $result->fetch_assoc();
 }
 
-$todoId = $_GET['id'];
-
-// Fetch the todo details
-$stmt = $conn->prepare("SELECT * FROM todos WHERE id = ?");
-$stmt->bind_param("i", $todoId);
-$stmt->execute();
-$todo = $stmt->get_result()->fetch_assoc();
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $_POST['title'];
+    $todoId = $_POST['todo_id'];
+    $todoTitle = $_POST['title'];
 
-    // Update the todo
-    $updateStmt = $conn->prepare("UPDATE todos SET title = ? WHERE id = ?");
-    $updateStmt->bind_param("si", $title, $todoId);
+    $updateQuery = "UPDATE todos SET title = ? WHERE id = ?";
+    $updateStmt = $conn->prepare($updateQuery);
+    $updateStmt->bind_param("si", $todoTitle, $todoId);
+    $updateStmt->execute();
 
-    if ($updateStmt->execute()) {
-        echo "<script>window.top.location.reload();</script>"; // Reload the parent page
-    } else {
-        echo "Error updating todo.";
-    }
+    header("Location: dashboard.php");
+    exit;
 }
 ?>
 
@@ -42,12 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Edit Todo</title>
 </head>
 <body>
-    <h1>Edit Todo</h1>
     <form method="POST">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($todo['title']); ?>" required>
-        <br>
-        <button type="submit">Save</button>
+        <input type="hidden" name="todo_id" value="<?php echo $todo['id']; ?>">
+        <input type="text" name="title" value="<?php echo htmlspecialchars($todo['title']); ?>" required>
+        <button type="submit">Save Changes</button>
     </form>
 </body>
 </html>

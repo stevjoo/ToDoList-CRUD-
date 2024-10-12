@@ -7,32 +7,27 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-if (!isset($_GET['id'])) {
-    echo "No task ID provided.";
-    exit;
+if (isset($_GET['task_id'])) {
+    $taskId = $_GET['task_id'];
+    $query = "SELECT * FROM tasks WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $taskId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $task = $result->fetch_assoc();
 }
 
-$taskId = $_GET['id'];
-
-// Fetch the task details
-$stmt = $conn->prepare("SELECT * FROM tasks WHERE id = ?");
-$stmt->bind_param("i", $taskId);
-$stmt->execute();
-$task = $stmt->get_result()->fetch_assoc();
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $taskName = $_POST['task_name'];
-    $completed = isset($_POST['completed']) ? 1 : 0;
+    $taskId = $_POST['task_id'];
+    $taskDescription = $_POST['task'];
 
-    // Update the task
-    $updateStmt = $conn->prepare("UPDATE tasks SET task = ?, completed = ? WHERE id = ?");
-    $updateStmt->bind_param("sii", $taskName, $completed, $taskId);
+    $updateQuery = "UPDATE tasks SET task = ? WHERE id = ?";
+    $updateStmt = $conn->prepare($updateQuery);
+    $updateStmt->bind_param("si", $taskDescription, $taskId);
+    $updateStmt->execute();
 
-    if ($updateStmt->execute()) {
-        echo "<script>window.top.location.reload();</script>"; // Reload the parent page
-    } else {
-        echo "Error updating task.";
-    }
+    header("Location: dashboard.php");
+    exit;
 }
 ?>
 
@@ -43,15 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Edit Task</title>
 </head>
 <body>
-    <h1>Edit Task</h1>
     <form method="POST">
-        <label for="task_name">Task Name:</label>
-        <input type="text" id="task_name" name="task_name" value="<?php echo htmlspecialchars($task['task']); ?>" required>
-        <br>
-        <label for="completed">Completed:</label>
-        <input type="checkbox" id="completed" name="completed" <?php echo $task['completed'] ? 'checked' : ''; ?>>
-        <br>
-        <button type="submit">Save</button>
+        <input type="hidden" name="task_id" value="<?php echo $task['id']; ?>">
+        <input type="text" name="task" value="<?php echo htmlspecialchars($task['task']); ?>" required>
+        <button type="submit">Save Changes</button>
     </form>
 </body>
 </html>
