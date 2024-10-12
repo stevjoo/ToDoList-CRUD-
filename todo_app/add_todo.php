@@ -15,7 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bind_param("is", $userId, $title);
 
     if ($stmt->execute()) {
-        header("Location: dashboard.php");
+        // Eli : ini aku ganti lokasinya agar gak conflict sama modal yg di dashboard ya
+        // maksudnya redirect ke same page daripada ke dashboard.php
+        // kalo gak nanti di dalam modalnya malah buka dashboard.php...
+        header("Location: add_todo.php?success=1");
     } else {
         echo "Gagal menambahkan to-do list.";
     }
@@ -28,12 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah To-Do List</title>
+    <link rel="stylesheet" href="src/todostylesoutput.css">
 </head>
-<body>
-    <h2>Tambah To-Do List</h2>
+<body class="bg-slate-50 text-slate-600 text-xl h-screen">
+    <h2 class="text-3xl font-bold py-4 border-b-2">Add New To-Do List</h2>
     <form action="add_todo.php" method="POST">
-        <input type="text" name="title" placeholder="Judul To-Do List" required><br>
-        <button type="submit">Tambah</button>
+        <h3 class="my-4">Enter name of list:</h3>
+        <input class="input w-full m-auto" type="text" name="title" placeholder="New To-Do List" required><br>
+        <button class="btn btn-outline btn-block fixed bottom-4" type="submit">Create List</button>
     </form>
 </body>
 </html>

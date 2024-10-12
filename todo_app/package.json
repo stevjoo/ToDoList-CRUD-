@@ -1,0 +1,20 @@
+{
+  "name": "todolist_uts_webprog_lab",
+  "version": "1.0.0",
+  "description": "bikin frontend dengan tailwind",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-css": "tailwindcss build src/todostyles.css -o src/todostylesoutput.css",
+    "watch-css": "tailwindcss build src/todostyles.css -o src/todostylesoutput.css --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.13",
+    "tailwindcss": "^3.4.13"
+  }
+}

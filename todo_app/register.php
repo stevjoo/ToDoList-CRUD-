@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        echo "Email sudah digunakan.";
+        echo "The email you entered has already been registered.";
     } else {
         $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $username, $email, $password);
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt->execute()) {
             header("Location: index.php");
         } else {
-            echo "Gagal mendaftarkan user.";
+            echo "Failed to register user.";
         }
     }
 }
@@ -32,14 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="src/todostylesoutput.css">
+
 </head>
-<body>
-    <h2>Register</h2>
-    <form action="register.php" method="POST">
-        <input type="text" name="username" placeholder="Username" required><br>
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="password" name="password" placeholder="Password" required><br>
-        <button type="submit">Register</button>
-    </form>
+<body class="min-h-screen bg-gradient-to-r from-blue-200 to-purple-200 m-0 p-0 overflow-visible">
+    <div class="m-auto h-screen w-4/5 p-10 md:w-3/5 bg-slate-100 text-xl shadow-xl shadow-blue">
+        <h2 class="m-4 py-4 text-3xl text-center font-bold border-b-2">Register</h2>
+        <form action="register.php" method="POST" class="flex flex-col items-center">
+            <input class="input input-lg my-4 md:w-3/5" type="text" name="username" placeholder="Username" required><br>
+            <input class="input input-lg my-4 md:w-3/5" type="email" name="email" placeholder="Email" required><br>
+            <input class="input input-lg my-4 md:w-3/5" type="password" name="password" placeholder="Password" required>
+            <button class="my-4 block btn btn-primary text-xl" type="submit">Create your account</button>
+            <a class="my-4 block text-center text-blue-600 hover:underline" href="register.php">Already have an account?</a>
+        </form>
+    </div>
 </body>
 </html>

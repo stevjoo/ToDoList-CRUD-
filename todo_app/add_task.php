@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($stmt->execute()) {
         header("Location: dashboard.php");
     } else {
-        echo "Gagal menambahkan task.";
+        echo "Failed to create task.";
     }
 }
 ?>
@@ -28,13 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Task</title>
+    <link rel="stylesheet" href="src/todostylesoutput.css">
 </head>
-<body>
-    <h2>Tambah Task</h2>
+<body class="bg-slate-50 text-slate-600 text-xl h-screen">
+    <h2 class="text-3xl font-bold py-4 border-b-2">Add Task</h2>
     <form action="add_task.php" method="POST">
-        <input type="text" name="task" placeholder="Nama Task" required><br>
-        <input type="hidden" name="todo_id" value="<?php echo $_GET['todo_id']; ?>"><br>
-        <button type="submit">Tambah</button>
+        <input class="input w-full m-auto" type="text" name="task" placeholder="Enter your task here..." required><br>
+        <input type="hidden" name="todo_id" value="<?php echo $_GET['todo_id']; ?>">
+        <button class="btn btn-outline btn-block fixed bottom-4" type="submit">Create Task</button>
     </form>
 </body>
 </html>
