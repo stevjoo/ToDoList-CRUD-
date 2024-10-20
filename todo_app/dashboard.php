@@ -11,6 +11,12 @@ $userId = $_SESSION['user_id'];
 $statusFilter = isset($_GET['status']) ? $_GET['status'] : 'all';
 $searchQuery = isset($_GET['search']) ? $_GET['search'] : '';
 
+// Validasi status filter
+$validStatuses = ['all', 'completed', 'incomplete'];
+if (!in_array($statusFilter, $validStatuses)) {
+    $statusFilter = 'all';
+}
+
 $query = "SELECT * FROM todos WHERE user_id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $userId);
@@ -92,13 +98,11 @@ $result = $stmt->get_result();
 
                     echo '<input class="checkbox checkbox-lg md:checkbox-md checkbox-primary" type="checkbox" ' 
                         . ($task['completed'] ? 'checked' : '') 
-                        . ' onchange="location.href=\'complete_task.php?task_id=' . $task['id'] . '&status=' 
+                        . ' onchange="location.href=\'complete_task.php?task_id=' . htmlspecialchars($task['id']) . '&status=' 
                         . ($task['completed'] ? '0' : '1') . '\'"/>';
 
                     echo '<p class="ml-2 py-1">' . htmlspecialchars($task['task']) . '</p>';
-
-                    // Updated Delete Task Button with Confirmation
-                    echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . $task['id'] . ')" class="ml-auto text-red-500 hover:underline">Delete</a>';
+                    echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . htmlspecialchars($task['id']) . ')" class="ml-auto text-red-500 hover:underline">Delete</a>';
 
                     echo '</li>';
                 }
@@ -108,56 +112,54 @@ $result = $stmt->get_result();
                 echo '<div class="w-full h-full md:w-4/5
                 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-sky-100">';
                 while ($row = $result->fetch_assoc()) {
-    $todoId = $row['id'];
-    echo '<div class="my-4 m-auto w-4/5 max-w-96 max-h-80
-            bg-slate-50 shadow-md shadow-slate-400 rounded-3xl overflow-hidden">
-            <h4 class="font-bold bg-gradient-to-tr from-blue-200 to-sky-200 p-4 text-xl text-slate-600">' . htmlspecialchars($row['title']) . "</h4>";
-            echo '<a href="edit_todo.php?todo_id=' . $row['id'] . '" class="ml-2 text-blue-500 hover:underline">Edit</a>';
+                    $todoId = $row['id'];
+                    echo '<div class="my-4 m-auto w-4/5 max-w-96 max-h-80
+                            bg-slate-50 shadow-md shadow-slate-400 rounded-3xl overflow-hidden">
+                            <h4 class="font-bold bg-gradient-to-tr from-blue-200 to-sky-200 p-4 text-xl text-slate-600">' . htmlspecialchars($row['title']) . "</h4>";
+                    echo '<a href="edit_todo.php?todo_id=' . htmlspecialchars($row['id']) . '" class="ml-2 text-blue-500 hover:underline">Edit</a>';
 
+                    $filterQuery = "SELECT * FROM tasks WHERE todo_id = ?";
+                    if ($statusFilter == 'completed') {
+                        $filterQuery .= " AND completed = 1";
+                    } elseif ($statusFilter == 'incomplete') {
+                        $filterQuery .= " AND completed = 0";
+                    }
 
-    $filterQuery = "SELECT * FROM tasks WHERE todo_id = ?";
-    if ($statusFilter == 'completed') {
-        $filterQuery .= " AND completed = 1";
-    } elseif ($statusFilter == 'incomplete') {
-        $filterQuery .= " AND completed = 0";
-    }
+                    $taskStmt = $conn->prepare($filterQuery);
+                    $taskStmt->bind_param("i", $todoId);
+                    $taskStmt->execute();
+                    $tasks = $taskStmt->get_result();
 
-    $taskStmt = $conn->prepare($filterQuery);
-    $taskStmt->bind_param("i", $todoId);
-    $taskStmt->execute();
-    $tasks = $taskStmt->get_result();
+                    echo '<div class="max-h-40 overflow-y-scroll">';
+                    echo '<ul class"max-h-64 overflow-x-scroll p-0 m-0">';
+                    while ($task = $tasks->fetch_assoc()) {
+                        echo $task['completed'] 
+                            ? '<li class="flex items-center line-through text-slate-600 text-opacity-50 p-1 break-words w-full border-b">'
+                            : '<li class="flex items-center p-1 break-words w-full border-b">';
 
-    echo '<div class="max-h-40 overflow-y-scroll">';
-    echo '<ul class"max-h-64 overflow-x-scroll p-0 m-0">';
-    while ($task = $tasks->fetch_assoc()) {
-        echo $task['completed'] 
-            ? '<li class="flex items-center line-through text-slate-600 text-opacity-50 p-1 break-words w-full border-b">'
-            : '<li class="flex items-center p-1 break-words w-full border-b">';
+                        echo '<input class="checkbox checkbox-lg md:checkbox-md checkbox-primary" type="checkbox" ' 
+                            . ($task['completed'] ? 'checked' : '') 
+                            . ' onchange="location.href=\'complete_task.php?task_id=' . htmlspecialchars($task['id']) . '&status=' 
+                            . ($task['completed'] ? '0' : '1') . '\'"/>';
 
-        echo '<input class="checkbox checkbox-lg md:checkbox-md checkbox-primary" type="checkbox" ' 
-            . ($task['completed'] ? 'checked' : '') 
-            . ' onchange="location.href=\'complete_task.php?task_id=' . $task['id'] . '&status=' 
-            . ($task['completed'] ? '0' : '1') . '\'"/>';
+                        echo '<p class="ml-2 py-1">' . htmlspecialchars($task['task']) . '</p>';
+                        echo '<a href="edit_task.php?task_id=' . htmlspecialchars($task['id']) . '" class="ml-2 text-blue-500 hover:underline">Edit</a>';
 
-        echo '<p class="ml-2 py-1">' . htmlspecialchars($task['task']) . '</p>';
-        echo '<a href="edit_task.php?task_id=' . $task['id'] . '" class="ml-2 text-blue-500 hover:underline">Edit</a>';
+                        echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . htmlspecialchars($task['id']) . ')" class="ml-auto text-red-500 hover:underline">Delete</a>';
 
-        echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . $task['id'] . ')" class="ml-auto text-red-500 hover:underline">Delete</a>';
+                        echo '</li>';
+                    }
+                    echo '</ul>';
+                    echo '</div>';
+                    echo '<div class="border-t-2">';
 
-        echo '</li>';
-    }
-    echo '</ul>';
-    echo '</div>';
-    echo '<div class="border-t-2">';
-
-    // Updated Delete Todo Button with Confirmation
-    echo "<a href='add_task.php?todo_id=" . $todoId . "' class='m-2 float-left rounded-full hover:bg-purple-300'>
-            <img class='m-4 max-w-8 max-h-8 inline-block' src='img/add-circle-svgrepo-com.svg' alt='add task svg' />
-          </a>".
-         "<a href='javascript:void(0)' onclick='confirmDeleteTodo(" . $todoId . ")' class='float-right m-2 rounded-full hover:bg-red-300'>
-            <img class='m-4 max-w-8 max-h-8 inline-block' src='img/delete-svgrepo-com.svg' alt='delete list svg' />
-          </a></div></div>";
-}
+                    echo "<a href='add_task.php?todo_id=" . htmlspecialchars($todoId) . "' class='m-2 float-left rounded-full hover:bg-purple-300'>
+                            <img class='m-4 max-w-8 max-h-8 inline-block' src='img/add-circle-svgrepo-com.svg' alt='add task svg' />
+                          </a>".
+                         "<a href='javascript:void(0)' onclick='confirmDeleteTodo(" . htmlspecialchars($todoId) . ")' class='float-right m-2 rounded-full hover:bg-red-300'>
+                            <img class='m-4 max-w-8 max-h-8 inline-block' src='img/delete-svgrepo-com.svg' alt='delete list svg' />
+                          </a></div></div>";
+                }
             }
             echo '</div>';
             ?>

@@ -3,22 +3,26 @@ session_start();
 require 'db/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $email = trim($_POST['email']); // Sanitize email input
+    $password = trim($_POST['password']); // Sanitize password input
 
     $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->bind_result($userId, $hashedPassword);
-    $stmt->fetch();
-
-    if (password_verify($password, $hashedPassword)) {
+    
+    if ($stmt->fetch() && password_verify($password, $hashedPassword)) {
         $_SESSION['user_id'] = $userId;
         header("Location: dashboard.php");
+        exit;
     } else {
         echo "Incorrect email or password.";
     }
+
+    $stmt->close();
 }
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>

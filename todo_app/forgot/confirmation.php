@@ -3,16 +3,16 @@ session_start();
 require '../db/config.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = htmlspecialchars($_POST['email']);
-    $phone = htmlspecialchars($_POST['phone']);
+    $email = trim(htmlspecialchars($_POST['email']));
+    $phone = trim(htmlspecialchars($_POST['phone']));
 
-    $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE email = ?");
-    mysqli_stmt_bind_param($stmt, "s", $email);
+    $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE email = ? AND phone = ?");
+    mysqli_stmt_bind_param($stmt, "ss", $email, $phone);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $user = mysqli_fetch_assoc($result);
 
-    if ($user && $phone) {
+    if ($user) {
         $_SESSION['user_id'] = $user['id'];
         header("Location: ./change_password.php");
         exit();
@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     mysqli_stmt_close($stmt); 
 }
+
+mysqli_close($conn); // Close the database connection
 ?>
 
 <form method="POST" action="">
@@ -33,5 +35,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </form>
 
 <?php if (isset($error)): ?>
-    <p style="color:red;"><?= $error ?></p>
+    <p style="color:red;"><?= htmlspecialchars($error) ?></p>
 <?php endif; ?>

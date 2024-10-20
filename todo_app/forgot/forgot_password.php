@@ -3,7 +3,7 @@ session_start();
 require '../db/config.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = trim(htmlspecialchars($_POST['username'])); 
+    $username = trim(htmlspecialchars($_POST['username']));
 
     $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE username = ?");
     mysqli_stmt_bind_param($stmt, "s", $username);
@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     mysqli_stmt_close($stmt);
 }
+
+mysqli_close($conn); // Close the database connection
 ?>
 
 <form method="POST" action="">
@@ -30,5 +32,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </form>
 
 <?php if (isset($error)): ?>
-    <p style="color:red;"><?= $error ?></p>
+    <p style="color:red;"><?= htmlspecialchars($error) ?></p>
 <?php endif; ?>

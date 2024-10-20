@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$userId = $_SESSION['user_id'];
+$userId = intval($_SESSION['user_id']); // Ensure the user ID is an integer
 
 // Ambil data profil user
 $query = $conn->prepare("SELECT username, email FROM users WHERE id = ?");
@@ -15,6 +15,9 @@ $query->bind_param("i", $userId);
 $query->execute();
 $query->bind_result($username, $email);
 $query->fetch();
+$query->close();
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -28,9 +31,9 @@ $query->fetch();
 <body class="bg-slate-50 text-xl text-slate-600 h-screen">
     <h2 class="text-3xl font-bold py-4 border-b">Your Profile</h2>
     <h3>Username:</h3>
-    <p class="bg-sky-100"><?php echo $username; ?></p>
+    <p class="bg-sky-100"><?php echo htmlspecialchars($username); ?></p>
     <h3 class="mt-4">Email:</h3>
-    <p class="bg-sky-100"><?php echo $email; ?></p>
+    <p class="bg-sky-100"><?php echo htmlspecialchars($email); ?></p>
     <a class="btn btn-outline btn-block fixed bottom-4" href="edit_profile.php">Edit Profile</a>
 </body>
 </html>

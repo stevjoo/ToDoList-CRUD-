@@ -7,12 +7,12 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$userId = $_SESSION['user_id'];
+$userId = intval($_SESSION['user_id']); // Ensure the user ID is an integer
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $username = trim($_POST['username']);
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT);
 
     $stmt = $conn->prepare("UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?");
     $stmt->bind_param("sssi", $username, $email, $password, $userId);
@@ -22,8 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         echo "Gagal mengupdate profil.";
     }
+
+    $stmt->close();
 }
+
+$conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

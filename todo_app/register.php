@@ -1,13 +1,12 @@
 <?php
-require 'db/config.php'; // Ensure this initializes the $conn variable for MySQLi
+require 'db/config.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = htmlspecialchars($_POST['username']);
-    $email = htmlspecialchars($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $phone = htmlspecialchars($_POST['phone']);
+    $username = trim(htmlspecialchars($_POST['username'])); 
+    $email = trim(htmlspecialchars($_POST['email']));
+    $password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT);
+    $phone = trim(htmlspecialchars($_POST['phone']));
 
-    // Check if the email or phone already exists
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ? OR phone = ?");
     $stmt->bind_param("ss", $email, $phone);
     $stmt->execute();
@@ -16,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($stmt->num_rows > 0) {
         echo "<p style='color:red;'>The email or phone number you entered has already been registered.</p>";
     } else {
-        // Insert the new user into the database
         $stmt = $conn->prepare("INSERT INTO users (username, email, password, phone) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $username, $email, $password, $phone);
 
@@ -28,8 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $stmt->close(); // Close the statement
+    $stmt->close(); 
 }
+
+$conn->close(); 
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input class="input input-lg my-4 md:w-3/5" type="password" name="password" placeholder="Password" required>
             <input class="input input-lg my-4 md:w-3/5" type="text" name="phone" placeholder="Phone" required>
             <button class="my-4 block btn btn-primary text-xl" type="submit">Create your account</button>
-            <a class="my-4 block text-center text-blue-600 hover:underline" href="register.php">Already have an account?</a>
+            <a class="my-4 block text-center text-blue-600 hover:underline" href="index.php">Already have an account?</a>
         </form>
     </div>
 </body>

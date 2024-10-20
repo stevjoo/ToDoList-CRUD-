@@ -8,8 +8,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $task = $_POST['task'];
-    $todoId = $_POST['todo_id'];
+    $task = htmlspecialchars($_POST['task'], ENT_QUOTES, 'UTF-8');
+    $todoId = intval($_POST['todo_id']);
 
     $stmt = $conn->prepare("INSERT INTO tasks (todo_id, task) VALUES (?, ?)");
     $stmt->bind_param("is", $todoId, $task);
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <h2 class="text-3xl font-bold py-4 border-b-2">Add Task</h2>
     <form action="add_task.php" method="POST">
         <input class="input w-full m-auto" type="text" name="task" placeholder="Enter your task here..." required><br>
-        <input type="hidden" name="todo_id" value="<?php echo $_GET['todo_id']; ?>">
+        <input type="hidden" name="todo_id" value="<?php echo htmlspecialchars($_GET['todo_id'], ENT_QUOTES, 'UTF-8'); ?>">
         <button class="btn btn-outline btn-block fixed bottom-4" type="submit">Create Task</button>
     </form>
 </body>

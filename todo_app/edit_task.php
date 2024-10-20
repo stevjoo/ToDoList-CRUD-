@@ -8,27 +8,31 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (isset($_GET['task_id'])) {
-    $taskId = $_GET['task_id'];
+    $taskId = intval($_GET['task_id']); // Ensure the task ID is an integer
     $query = "SELECT * FROM tasks WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $taskId);
     $stmt->execute();
     $result = $stmt->get_result();
     $task = $result->fetch_assoc();
+    $stmt->close();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $taskId = $_POST['task_id'];
-    $taskDescription = $_POST['task'];
+    $taskId = intval($_POST['task_id']); // Ensure the task ID is an integer
+    $taskDescription = trim($_POST['task']); // Trim whitespace from task description
 
     $updateQuery = "UPDATE tasks SET task = ? WHERE id = ?";
     $updateStmt = $conn->prepare($updateQuery);
     $updateStmt->bind_param("si", $taskDescription, $taskId);
     $updateStmt->execute();
+    $updateStmt->close();
 
     header("Location: dashboard.php");
     exit;
 }
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>

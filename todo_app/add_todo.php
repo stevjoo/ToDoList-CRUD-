@@ -8,20 +8,19 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $_POST['title'];
+    $title = htmlspecialchars($_POST['title'], ENT_QUOTES, 'UTF-8');
     $userId = $_SESSION['user_id'];
 
     $stmt = $conn->prepare("INSERT INTO todos (user_id, title) VALUES (?, ?)");
     $stmt->bind_param("is", $userId, $title);
 
     if ($stmt->execute()) {
-        // Eli : ini aku ganti lokasinya agar gak conflict sama modal yg di dashboard ya
-        // maksudnya redirect ke same page daripada ke dashboard.php
-        // kalo gak nanti di dalam modalnya malah buka dashboard.php...
         header("Location: add_todo.php?success=1");
     } else {
         echo "Gagal menambahkan to-do list.";
     }
+
+    $stmt->close();
 }
 ?>
 

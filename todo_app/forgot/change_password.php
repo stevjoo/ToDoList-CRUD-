@@ -7,18 +7,19 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = intval($_SESSION['user_id']); // Ensure the user ID is an integer
 
 $stmt = mysqli_prepare($conn, "SELECT username, email FROM users WHERE id = ?");
 mysqli_stmt_bind_param($stmt, "i", $user_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $user = mysqli_fetch_assoc($result);
+mysqli_stmt_close($stmt); // Close the select statement
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $password = $_POST['password'] ?? '';
-    $password_confirm = $_POST['password_confirm'] ?? '';
+    $password = trim($_POST['password'] ?? '');
+    $password_confirm = trim($_POST['password_confirm'] ?? '');
 
     if (!empty($password)) {
         if ($password !== $password_confirm) {
@@ -39,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 }
+
+mysqli_close($conn); // Close the connection
 ?>
 
 <div class="container mx-auto my-10">
