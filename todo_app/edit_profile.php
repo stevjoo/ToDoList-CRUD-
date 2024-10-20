@@ -12,10 +12,11 @@ $userId = intval($_SESSION['user_id']); // Ensure the user ID is an integer
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username']);
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $phone = trim($_POST['phone']);
     $password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?");
-    $stmt->bind_param("sssi", $username, $email, $password, $userId);
+    $stmt = $conn->prepare("UPDATE users SET username = ?, email = ?, phone = ?, password = ? WHERE id = ?");
+    $stmt->bind_param("ssssi", $username, $email, $phone, $password, $userId);
 
     if ($stmt->execute()) {
         header("Location: profile.php");
@@ -46,6 +47,9 @@ $conn->close();
 
         <h3 class="mt-1">New email:</h3>
         <input class="input w-full m-auto" type="email" name="email" placeholder="Email" required><br>
+
+        <h3 class="mt-1">New Phone Number:</h3>
+        <input class="input w-full m-auto" type="text" name="phone" placeholder="Phone Number" required><br>
 
         <h3 class="mt-1">New Password:</h3>
         <input class="input w-full m-auto" type="password" name="password" placeholder="Password" required><br>
