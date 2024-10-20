@@ -1,8 +1,7 @@
 <?php
 session_start();
-require '../db/config.php'; // Ensure this initializes the $conn variable for MySQLi
+require '../db/config.php';
 
-// Redirect to login if the user is not logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit;
@@ -10,7 +9,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch user data from the database
 $stmt = mysqli_prepare($conn, "SELECT username, email FROM users WHERE id = ?");
 mysqli_stmt_bind_param($stmt, "i", $user_id);
 mysqli_stmt_execute($stmt);
@@ -19,21 +17,17 @@ $user = mysqli_fetch_assoc($result);
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get password from POST request
     $password = $_POST['password'] ?? '';
     $password_confirm = $_POST['password_confirm'] ?? '';
 
-    // Validate password if provided
     if (!empty($password)) {
         if ($password !== $password_confirm) {
             $errors[] = 'Passwords do not match';
         }
     }
 
-    // If no errors, proceed with updating the password
     if (count($errors) === 0) {
         if (!empty($password)) {
-            // Hash the new password and update it in the database
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
             $update_stmt = mysqli_prepare($conn, "UPDATE users SET password = ? WHERE id = ?");
             mysqli_stmt_bind_param($update_stmt, "si", $hashed_password, $user_id);
@@ -41,14 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             mysqli_stmt_close($update_stmt);
         }
 
-        // Redirect after successful update
         header("Location: ../index.php");
         exit;
     }
 }
 ?>
 
-<!-- HTML Form -->
 <div class="container mx-auto my-10">
     <h1 class="text-center text-2xl font-bold my-6">Change Password</h1>
 
@@ -63,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="password" id="password_confirm" name="password_confirm" class="w-full p-2 border border-gray-300 rounded-md">
         </div>
 
-        <!-- Display errors if any -->
         <?php if (count($errors) > 0): ?>
             <ul class="mb-4">
                 <?php foreach ($errors as $error): ?>
@@ -79,5 +70,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </form>
 </div>
 
-<!-- Tailwind CSS -->
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
