@@ -26,14 +26,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 mysqli_close($conn); // Close the database connection
 ?>
 
-<form method="POST" action="">
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="email" required>
-    <label for="phone">Phone:</label>
-    <input type="text" name="phone" id="phone" required>
-    <button type="submit">Next</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation</title>
+    <link rel="stylesheet" href="../src/todostylesoutput.css">
+</head>
+<body class="min-h-screen bg-gradient-to-r from-blue-200 to-purple-200 m-0 p-0 overflow-visible">
+    <div class="m-auto h-screen w-4/5 py-20 px-10 md:w-3/5 bg-slate-100 text-xl shadow-xl shadow-blue"> 
+        <h2 class="text-3xl font-bold py-2 border-b">Confirmation</h2>
+        <?php if (isset($error)): ?>
+            <p role="alert" class="alert font-semibold alert-error my-6"   ><?= htmlspecialchars($error) ?></p>
+        <?php endif; ?>
+        <form method="POST" action="">
+            <label class="font-semibold" for="email">Email:</label>
+            <input class="input input-lg my-4 w-full" type="email" name="email" id="email" required>
+            <label class="font-semibold" for="phone">Phone:</label>
+            <input class="input input-lg my-4 w-full" type="text" name="phone" id="phone" required>
+            <button class="btn btn-outline btn-block btn-primary my-4" type="submit">Next</button>
+            <a href="../index.php" class="btn btn-outline btn-block my-4">Back to Login</a>
+        </form>
+    </div>
+    
+</body>
+</html>
 
-<?php if (isset($error)): ?>
-    <p style="color:red;"><?= htmlspecialchars($error) ?></p>
-<?php endif; ?>
+
+
+

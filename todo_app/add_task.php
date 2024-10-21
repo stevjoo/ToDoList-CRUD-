@@ -27,15 +27,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Task</title>
+    <title>Add Task</title>
     <link rel="stylesheet" href="src/todostylesoutput.css">
 </head>
-<body class="bg-slate-50 text-slate-600 text-xl h-screen">
-    <h2 class="text-3xl font-bold py-4 border-b-2">Add Task</h2>
-    <form action="add_task.php" method="POST">
-        <input class="input w-full m-auto" type="text" name="task" placeholder="Enter your task here..." required><br>
-        <input type="hidden" name="todo_id" value="<?php echo htmlspecialchars($_GET['todo_id'], ENT_QUOTES, 'UTF-8'); ?>">
-        <button class="btn btn-outline btn-block fixed bottom-4" type="submit">Create Task</button>
-    </form>
+<body class="bg-gradient-to-r h-screen from-blue-300 to-purple-200">
+    <div class="m-auto h-screen w-full p-10 md:w-3/5 bg-slate-50 text-slate-600 text-xl">
+        <form class="my-12" action="add_task.php" method="POST">
+            <h2 class="text-3xl font-bold py-4 border-b-2">Add Task</h2>
+            <input class="input input-lg w-full m-auto" type="text" name="task" placeholder="Enter your task here..." required><br>
+            <input type="hidden" name="todo_id" value="<?php echo htmlspecialchars($_GET['todo_id'], ENT_QUOTES, 'UTF-8'); ?>">
+            <button class="btn btn-outline btn-success btn-block mx-auto mt-12" type="submit">Create Task</button>
+            <a class="btn btn-outline btn-neutral btn-block mx-auto mt-6" href="dashboard.php">Cancel</a>
+        </form>
+    </div>
 </body>
 </html>

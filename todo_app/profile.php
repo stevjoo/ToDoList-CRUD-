@@ -28,7 +28,7 @@ $conn->close();
     <title>Profil</title>
     <link rel="stylesheet" href="src/todostylesoutput.css">
 </head>
-<body class="bg-slate-50 text-xl text-slate-600 h-screen">
+<body class="bg-slate-50 text-xl text-slate-600 h-screen font-semibold">
     <h2 class="text-3xl font-bold py-4 border-b">Your Profile</h2>
     <h3>Username:</h3>
     <p class="bg-sky-100"><?php echo htmlspecialchars($username); ?></p>

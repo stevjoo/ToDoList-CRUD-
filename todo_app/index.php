@@ -16,7 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: dashboard.php");
         exit;
     } else {
-        echo "Incorrect email or password.";
+        echo '
+        <script>confirm("Incorrect email or password.");</script>
+        ';
     }
 
     $stmt->close();

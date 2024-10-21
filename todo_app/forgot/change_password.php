@@ -44,33 +44,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 mysqli_close($conn); // Close the connection
 ?>
 
-<div class="container mx-auto my-10">
-    <h1 class="text-center text-2xl font-bold my-6">Change Password</h1>
-
-    <form action="./change_password.php" method="POST" class="bg-white p-6 rounded-lg shadow-lg">
-        <div class="mb-4">
-            <label for="password" class="block text-gray-700 font-bold mb-2">New Password (optional):</label>
-            <input type="password" id="password" name="password" class="w-full p-2 border border-gray-300 rounded-md">
-        </div>
-
-        <div class="mb-4">
-            <label for="password_confirm" class="block text-gray-700 font-bold mb-2">Confirm New Password:</label>
-            <input type="password" id="password_confirm" name="password_confirm" class="w-full p-2 border border-gray-300 rounded-md">
-        </div>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Password</title>
+    <link rel="stylesheet" href="../src/todostylesoutput.css">
+</head>
+<body class="min-h-screen bg-gradient-to-r from-blue-200 to-purple-200 m-0 p-0 overflow-visible">
+    <div class="m-auto h-screen w-4/5 py-20 px-10 md:w-3/5 bg-slate-100 text-xl shadow-xl shadow-blue">   
+        <h2 class="text-center text-2xl font-bold my-6 border-b">Change Password</h2>
         <?php if (count($errors) > 0): ?>
-            <ul class="mb-4">
-                <?php foreach ($errors as $error): ?>
-                    <li class="text-red-500"><?= htmlspecialchars($error) ?></li>
-                <?php endforeach; ?>
-            </ul>
+                <ul class="mb-4">
+                    <?php foreach ($errors as $error): ?>
+                        <li role="alert" class="alert font-semibold alert-error my-6"><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
         <?php endif; ?>
+        <form action="./change_password.php" method="POST">
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-bold mb-2">New Password (optional):</label>
+                <input type="password" id="password" name="password" class="w-full p-2 border border-gray-300 rounded-md">
+            </div>
 
-        <div class="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-            <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition w-full text-sm sm:w-auto">Update Password</button>
-            <a href="./change_password.php" class="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition w-full sm:w-auto text-center">Cancel</a>
-        </div>
-    </form>
-</div>
+            <div class="mb-4">
+                <label for="password_confirm" class="block text-gray-700 font-bold mb-2">Confirm New Password:</label>
+                <input type="password" id="password_confirm" name="password_confirm" class="w-full p-2 border border-gray-300 rounded-md">
+            </div>
 
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+            <div class="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+                <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition w-full text-sm sm:w-auto">Update Password</button>
+                <a href="../index.php" class="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition w-full sm:w-auto text-center">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+

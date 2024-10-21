@@ -88,7 +88,7 @@ $result = $stmt->get_result();
                 $searchStmt->execute();
                 $tasks = $searchStmt->get_result();
 
-                echo '<div class="bg-purple-200 p-6 mt-4 rounded-lg shadow-md w-1/2 m-auto md:m-0">';
+                echo '<div class="bg-slate-50 p-6 mt-4 mx-4 rounded-lg shadow-md w-1/2 m-auto md:m-0">';
                 echo "<h2 class='text-lg font-bold mb-4'>You Searched for: <span class='text-blue-600'>" . htmlspecialchars($searchQuery) . "</span></h2>";
 
                 while ($task = $tasks->fetch_assoc()) {
@@ -102,7 +102,7 @@ $result = $stmt->get_result();
                         . ($task['completed'] ? '0' : '1') . '\'"/>';
 
                     echo '<p class="ml-2 py-1">' . htmlspecialchars($task['task']) . '</p>';
-                    echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . htmlspecialchars($task['id']) . ')" class="ml-auto text-red-500 hover:underline">Delete</a>';
+                    echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . htmlspecialchars($task['id']) . ')" class="ml-auto btn btn-error">Delete</a>';
 
                     echo '</li>';
                 }
@@ -115,8 +115,11 @@ $result = $stmt->get_result();
                     $todoId = $row['id'];
                     echo '<div class="my-4 m-auto w-4/5 max-w-96 max-h-80
                             bg-slate-50 shadow-md shadow-slate-400 rounded-3xl overflow-hidden">
-                            <h4 class="font-bold bg-gradient-to-tr from-blue-200 to-sky-200 p-4 text-xl text-slate-600">' . htmlspecialchars($row['title']) . "</h4>";
-                    echo '<a href="edit_todo.php?todo_id=' . htmlspecialchars($row['id']) . '" class="ml-2 text-blue-500 hover:underline">Edit</a>';
+                            <h4 class="font-bold bg-gradient-to-tr from-blue-200 to-sky-200 p-4 text-xl text-slate-600">' . htmlspecialchars($row['title']) . ' 
+                            <a href="edit_todo.php?todo_id=' . htmlspecialchars($row['id']) . '" class="hover:bg-blue-400 rounded-md px-1 float-right">
+                            <img class="m-8s max-w-8 max-h-8 inline-block" src="img/edit-pen-svgrepo-com.svg" alt="edit task svg" />
+                            </a></h4>';
+                    // echo '<a href="edit_todo.php?todo_id=' . htmlspecialchars($row['id']) . '" class="ml-2 text-blue-400 hover:underline">Edit</a>';
 
                     $filterQuery = "SELECT * FROM tasks WHERE todo_id = ?";
                     if ($statusFilter == 'completed') {
@@ -143,10 +146,10 @@ $result = $stmt->get_result();
                             . ($task['completed'] ? '0' : '1') . '\'"/>';
 
                         echo '<p class="ml-2 py-1">' . htmlspecialchars($task['task']) . '</p>';
-                        echo '<a href="edit_task.php?task_id=' . htmlspecialchars($task['id']) . '" class="ml-2 text-blue-500 hover:underline">Edit</a>';
-
-                        echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . htmlspecialchars($task['id']) . ')" class="ml-auto text-red-500 hover:underline">Delete</a>';
-
+                        echo '<span class="ml-auto mr-2">';
+                        echo '<a href="edit_task.php?task_id=' . htmlspecialchars($task['id']) . '" class="mx-2 badge hover:underline hover:badge-neutral">Edit</a>';
+                        echo '<a href="javascript:void(0)" onclick="confirmDeleteTask(' . htmlspecialchars($task['id']) . ')" class="mx-2 badge hover:underline hover:badge-error">Delete</a>';
+                        echo '</span>';
                         echo '</li>';
                     }
                     echo '</ul>';

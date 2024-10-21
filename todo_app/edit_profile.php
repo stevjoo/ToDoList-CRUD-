@@ -39,8 +39,7 @@ $conn->close();
     <title>Edit Profil</title>
     <link rel="stylesheet" href="src/todostylesoutput.css">
 </head>
-<body class="bg-slate-50 text-xl text-slate-600 h-screen">
-    <h2 class="text-3xl font-bold py-4 border-b">Edit Profile</h2>
+<body class="bg-slate-50 text-xl text-slate-600 h-screen font-semibold">
     <form action="edit_profile.php" method="POST">
         <h3>New Username:</h3>
         <input class="input w-full m-auto" type="text" name="username" placeholder="Username" required><br>
@@ -53,7 +52,7 @@ $conn->close();
 
         <h3 class="mt-1">New Password:</h3>
         <input class="input w-full m-auto" type="password" name="password" placeholder="Password" required><br>
-        <button class="btn btn-outline btn-block fixed bottom-4" type="submit">Update Profile</button>
+        <button class="btn btn-outline btn-block my-4" type="submit">Update Profile</button>
     </form>
 </body>
 </html>
