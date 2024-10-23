@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (isset($_GET['task_id'])) {
-    $taskId = intval($_GET['task_id']); // Optional: converting to integer to ensure type safety
+    $taskId = intval($_GET['task_id']); 
 
     $stmt = $conn->prepare("DELETE FROM tasks WHERE id = ?");
     $stmt->bind_param("i", $taskId);

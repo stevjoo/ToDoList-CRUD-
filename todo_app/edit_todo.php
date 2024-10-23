@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (isset($_GET['todo_id'])) {
-    $todoId = intval($_GET['todo_id']); // Ensure the todo ID is an integer
+    $todoId = intval($_GET['todo_id']); 
     $query = "SELECT * FROM todos WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $todoId);
@@ -19,8 +19,8 @@ if (isset($_GET['todo_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $todoId = intval($_POST['todo_id']); // Ensure the todo ID is an integer
-    $todoTitle = trim($_POST['title']); // Trim whitespace from todo title
+    $todoId = intval($_POST['todo_id']); 
+    $todoTitle = trim($_POST['title']); 
 
     $updateQuery = "UPDATE todos SET title = ? WHERE id = ?";
     $updateStmt = $conn->prepare($updateQuery);

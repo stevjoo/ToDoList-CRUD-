@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (isset($_GET['id'])) {
-    $todoId = intval($_GET['id']); // Ensure that the ID is an integer
+    $todoId = intval($_GET['id']); 
 
     $stmt = $conn->prepare("DELETE FROM todos WHERE id = ?");
     $stmt->bind_param("i", $todoId);

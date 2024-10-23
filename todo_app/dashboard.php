@@ -119,7 +119,6 @@ $result = $stmt->get_result();
                             <a href="edit_todo.php?todo_id=' . htmlspecialchars($row['id']) . '" class="hover:bg-blue-400 rounded-md px-1 float-right">
                             <img class="m-8s max-w-8 max-h-8 inline-block" src="img/edit-pen-svgrepo-com.svg" alt="edit task svg" />
                             </a></h4>';
-                    // echo '<a href="edit_todo.php?todo_id=' . htmlspecialchars($row['id']) . '" class="ml-2 text-blue-400 hover:underline">Edit</a>';
 
                     $filterQuery = "SELECT * FROM tasks WHERE todo_id = ?";
                     if ($statusFilter == 'completed') {
@@ -248,7 +247,6 @@ $result = $stmt->get_result();
             }
         }
 
-        // for modal close window button to refresh page
         function refreshPage() {
             location.reload(); 
         }

@@ -3,8 +3,8 @@ session_start();
 require 'db/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = trim($_POST['email']); // Sanitize email input
-    $password = trim($_POST['password']); // Sanitize password input
+    $email = trim($_POST['email']); 
+    $password = trim($_POST['password']); 
 
     $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);

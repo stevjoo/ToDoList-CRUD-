@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (isset($_GET['task_id'])) {
-    $taskId = intval($_GET['task_id']); // Ensure the task ID is an integer
+    $taskId = intval($_GET['task_id']); 
     $query = "SELECT * FROM tasks WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $taskId);
@@ -19,8 +19,8 @@ if (isset($_GET['task_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $taskId = intval($_POST['task_id']); // Ensure the task ID is an integer
-    $taskDescription = trim($_POST['task']); // Trim whitespace from task description
+    $taskId = intval($_POST['task_id']); 
+    $taskDescription = trim($_POST['task']); 
 
     $updateQuery = "UPDATE tasks SET task = ? WHERE id = ?";
     $updateStmt = $conn->prepare($updateQuery);
